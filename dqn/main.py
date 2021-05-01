@@ -1,23 +1,19 @@
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install",
+                       "./python"])
+
 from collections import deque
 import numpy as np
 import torch
 from unityagents import UnityEnvironment
 from agent import Agent
 from matplotlib import pylab as plt
-
-import subprocess
-import sys
-
 """
 This script allows to train an agent using the DQN algorithm.
 To launch the script: 'python main.py'.
 """
-
-
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install",
-                           package])
-
 
 def dqn_training(env, agent, brain_name="BananaBrain", n_episodes=1000,
                  max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
@@ -84,9 +80,6 @@ def main():
     It creates the agent and environment instances, and launch the agent
     training.
     """
-    # !pip -q install ./python
-    install("./python")
-
     # Load environment
     env = UnityEnvironment(file_name="/data/Banana_Linux_NoVis/Banana.x86_64")
     brain_name = env.brain_names[0]
@@ -119,3 +112,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
