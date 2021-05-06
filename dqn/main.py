@@ -62,7 +62,7 @@ def dqn_training(env, agent, brain_name="BananaBrain", n_episodes=1000,
         scores.append(score)              # save most recent score
         eps = max(eps_end, eps_decay*eps)  # decrease epsilon
         print('\rEpisode {}\tAverage Score: {:.2f}'.format(
-            i_episode, np.mean(scores_window)), end="")
+            i_episode, np.mean(scores_window)), end='')
         if i_episode % 100 == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(
                 i_episode, np.mean(scores_window)))

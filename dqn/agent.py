@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import random
 import torch
 import torch.optim as optim
@@ -15,11 +17,10 @@ TAU = 1e-3              # for soft update of target parameters
 LR = 5e-4               # learning rate
 UPDATE_EVERY = 4        # how often to update the network
 
+DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-
-class Agent():
+class Agent(object):
     """Interacts with and learns from the environment."""
 
     def __init__(self, state_size, action_size, seed):
@@ -36,9 +37,9 @@ class Agent():
 
         # Q-Network
         self.qnetwork_local = QNetwork(state_size, action_size,
-                                       seed).to(device)
+                                       seed).to(DEVICE)
         self.qnetwork_target = QNetwork(state_size, action_size,
-                                        seed).to(device)
+                                        seed).to(DEVICE)
         self.optimizer = optim.Adam(self.qnetwork_local.parameters(), lr=LR)
 
         # Replay memory
@@ -64,7 +65,7 @@ class Agent():
             state (array_like): current state
             eps (float): epsilon, for epsilon-greedy action selection
         """
-        state = torch.from_numpy(state).float().unsqueeze(0).to(device)
+        state = torch.from_numpy(state).float().unsqueeze(0).to(DEVICE)
         self.qnetwork_local.eval()
         with torch.no_grad():
             action_values = self.qnetwork_local(state)
@@ -73,8 +74,7 @@ class Agent():
         # Epsilon-greedy action selection
         if random.random() > eps:
             return np.argmax(action_values.cpu().data.numpy())
-        else:
-            return random.choice(np.arange(self.action_size))
+        return random.choice(np.arange(self.action_size))
 
     def learn(self, experiences, gamma):
         """Update value parameters using given batch of experience tuples.
@@ -103,9 +103,9 @@ class Agent():
         self.optimizer.step()
 
         # ------------------- update target network ------------------- #
-        self.soft_update(self.qnetwork_local, self.qnetwork_target, TAU)
+        self.soft_update(TAU)
 
-    def soft_update(self, local_model, target_model, tau):
+    def soft_update(self, tau):
         """Soft update model parameters.
         θ_target = τ*θ_local + (1 - τ)*θ_target
 
@@ -115,13 +115,15 @@ class Agent():
             target_model (PyTorch model): weights will be copied to
             tau (float): interpolation parameter 
         """
-        for target_param, local_param in zip(target_model.parameters(),
-                                             local_model.parameters()):
+        for target_param, local_param in zip(
+                self.qnetwork_target.parameters(),
+                self.qnetwork_local.parameters()):
             target_param.data.copy_(
                 tau*local_param.data + (1.0-tau)*target_param.data)
 
 
-class ReplayBuffer:
+class ReplayBuffer(object):
+
     """Fixed-size buffer to store experience tuples."""
 
     def __init__(self, action_size, buffer_size, batch_size, seed):
@@ -153,19 +155,19 @@ class ReplayBuffer:
 
         states = torch.from_numpy(
             np.vstack([e.state for e in experiences
-                       if e is not None])).float().to(device)
+                       if e is not None])).float().to(DEVICE)
         actions = torch.from_numpy(
             np.vstack([e.action for e in experiences
-                       if e is not None])).long().to(device)
+                       if e is not None])).long().to(DEVICE)
         rewards = torch.from_numpy(
             np.vstack([e.reward for e in experiences
-                       if e is not None])).float().to(device)
+                       if e is not None])).float().to(DEVICE)
         next_states = torch.from_numpy(
             np.vstack([e.next_state for e in experiences
-                       if e is not None])).float().to(device)
+                       if e is not None])).float().to(DEVICE)
         dones = torch.from_numpy(
             np.vstack([e.done for e in experiences
-                       if e is not None]).astype(np.uint8)).float().to(device)
+                       if e is not None]).astype(np.uint8)).float().to(DEVICE)
 
         return (states, actions, rewards, next_states, dones)
 
