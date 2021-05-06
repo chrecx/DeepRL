@@ -27,4 +27,4 @@ Setup the hyperparameters in:
 To launch training:  
 `python main.py`
 
-After training, trained model (weights), are saved to `ckpt/checkpoint.pth`
+After training, trained model (weights), are saved to `checkpoint.pth`
