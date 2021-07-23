@@ -54,7 +54,10 @@ These parameters are related to the Reinforcement learning procedure:
 - `BATCH_SIZE = 128` is the number samples used to achieve the optimization process. 
 
 ### Results
+We show on the figure below the average score computed over episodes obtained from the 20 agents with the DDPG algorithm and the network architectures describes above. The plotted average score is obtained from the average over 100 consecutive episodes (The first point is thus calculated after 100 episodes).
+The target of +30 is reached after 125 episodes. Also, we observe a stability of the score which show that the system seems to be very stable. Finally the steady state score is around 37.
 
+![avg-score](p2-avg-score.png "Title")
 
 ### Future perspectives
 
