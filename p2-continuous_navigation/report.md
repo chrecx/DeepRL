@@ -40,5 +40,22 @@ The architecture of the critic network is a little bit more complex. Instead of 
 
 The size of the hidden layers of actor and critic networks are hyperparameters. In order to limit the number of parameters of the networks, they should be as small as possible. In our implementation all layer sizes are set to 128.
 
+In addtion to architecture, we need to adjust hyperparameters related to the learning: 
+- `LR_ACTOR = 0.0001` is the learning rate for the optimization procedure to update the local actor weights
+- `LR_CRITIC = 0.001` is the learning rate for optimization procedure to update of the local critic weights
+
+
 ### Agent hyperparameters
 
+These parameters are related to the Reinforcement learning procedure:
+- `BUFFER_SIZE = 100000` is the maximum number tuples `(state, action, reward, next_state, done)` of the experience replay buffer.
+- `GAMMA = 0.99` which control the discount factor, and so the "deep" of the reinforcement learning process.
+- `TAU = 0.001` controls soft-update related to the target network parameters. Smaller `TAU` is, smaller is the weights update.
+- `BATCH_SIZE = 128` is the number samples used to achieve the optimization process. 
+
+### Results
+
+
+### Future perspectives
+
+At this step, we only test the DDPG algorithm. It is important to test other algorithms 
