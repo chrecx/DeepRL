@@ -60,5 +60,6 @@ The target of +30 is reached after 125 episodes. Also, we observe a stability of
 ![avg-score](p2-avg-score.png "Title")
 
 ### Future perspectives
-
-At this step, we only test the DDPG algorithm. It is important to test other algorithms such as PPO, A3C, or D4PG.
+From a technical point, it will be necessary to understand the behavior of the model for several hyperparameters sets.
+From an algorithm point of view, at this step, we only test the DDPG algorithm. It is important to test other algorithms such as PPO, A3C, or D4PG.
+Finally, try to solve many other use-cases involving continuous control will be one main objective.
