@@ -61,4 +61,4 @@ The target of +30 is reached after 125 episodes. Also, we observe a stability of
 
 ### Future perspectives
 
-At this step, we only test the DDPG algorithm. It is important to test other algorithms 
+At this step, we only test the DDPG algorithm. It is important to test other algorithms such as PPO, A3C, or D4PG.
