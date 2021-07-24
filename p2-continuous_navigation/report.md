@@ -14,7 +14,8 @@ To solve the environment, the average score over 100 episodes and all the agents
 We use the DDPG (Deep Deterministic Policy Gradient) algorithm in which two networks must be trained to learn:
 - the best action to achieve in any state: the actor network
 - the expected value related to any state: the critic network
-For a given the state, The actor provides the probability for each action, while the critic network provides the expected value of each state.
+
+For a given the state, The actor provides the probability for each actionto be choosen, while the critic network provides the expected value of each state which is the estimate of the Q-function. We will see that for both actor and critic networks, a target network is introduced to improve weights update as in DQN.
 
 As in the DQN algorithm, the algorithm used an experience replay buffer which allows to store the tuple `(state, action, reward, next state)` of each agent at each time step. It is a FIFO queue where the size is an hyperparameter.
 
@@ -37,6 +38,8 @@ We describe hereafter the training procedure:
 The actor network is a stack of two hidden linear layers, followed by a ReLU function. The number of input neurons is the state space size (33), while the number of output neurons is the action space size (4). The activation function of the output layer is a `tanh` function, allowing continuous values of the action vector in the [-1, +1] interval.
 
 The architecture of the critic network is a little bit more complex. Instead of directly stacking at the input action and state spaces, a first hidden layer is used with input only the state vector (33-D). Then, the ouput of this first layer is concatenated with action vector (4-D) to feed a second hidden layer. Finally, the output layer is 1 neuron, providing the estimated Q-value.
+
+Note that we use batch normalization at the input of hidden layers to make learning more stable and faster by re-centering and re-scaling input data.
 
 The size of the hidden layers of actor and critic networks are hyperparameters. In order to limit the number of parameters of the networks, they should be as small as possible. In our implementation all layer sizes are set to 128.
 
