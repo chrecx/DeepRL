@@ -41,7 +41,7 @@ The architecture of the critic network is a little bit more complex. Instead of 
 
 Note that we use batch normalization at the input of hidden layers to make learning more stable and faster by re-centering and re-scaling input data.
 
-The size of the hidden layers of actor and critic networks are hyperparameters. In order to limit the number of parameters of the networks, they should be as small as possible. In our implementation all layer sizes are set to 128.
+The size of the hidden layers of actor and critic networks are hyperparameters. In order to limit the number of parameters of the networks, they should be as small as possible. In our implementation all layer neurons contain 128 neurons.
 
 In addtion to architecture, we need to adjust hyperparameters related to the learning: 
 - `LR_ACTOR = 0.0001` is the learning rate for the optimization procedure to update the local actor weights
@@ -58,7 +58,7 @@ These parameters are related to the Reinforcement learning procedure:
 
 ### Results
 We show on the figure below the average score computed over episodes obtained from the 20 agents with the DDPG algorithm and the network architectures describes above. The plotted average score is obtained from the average over 100 consecutive episodes (The first point is thus calculated after 100 episodes).
-The target of +30 is reached after 125 episodes. Also, we observe a stability of the score which show that the system seems to be very stable. Finally the steady state score is around 37.
+The target of +30 is reached after 125 episodes, veru quickly. Also, we observe a stability of the score which show that the system seems to be very stable. Finally the steady state score is around 37.
 
 ![avg-score](p2-avg-score.png "Title")
 
