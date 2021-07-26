@@ -42,7 +42,7 @@ To set up your python environment to run the code in this repository, follow the
 
 
 ### Train the agent
-Open the `p3-Tennis.ipynb` and run the cells with SHIFT+ENTER. 
+Open the `Tennis.ipynb` and run the cells with SHIFT+ENTER. 
 
 At the end, weights will be saved both for the critic and actor networks.
 
