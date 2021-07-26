@@ -1,0 +1,68 @@
+### Objective of the project
+
+The objective of the project is to train an agent to play tennis. The learning is realized by training two agents playing against each other. In project P2 (repository `p2-continuous-control`), we used a multi-agents strategy, in which all agents were independents, to boost the exploration. The benefit was shared among all the agents. In this project, we will use the same strategy but in a different framework: the 2 agents play together, and they are in interaction. The environment just provides the "physical laws" which govern the ball in a tennis game, not an adversary. For two players, the goal is not to "loose", but the progress of one player will benefit to the other. The framework is thus a mix of collaboration and competition, induced by the reward strategy.
+
+Each agent control its racket. If an agent hits the ball over the net, it receives a reward of +0.1. If an agent lets a ball hit the ground or hits the ball out of bounds, it receives a reward of -0.01. At the end of an episode, the score of each agent is the cumulative reward. The two agents can have different scores. The collaboration is obtained by taking the maximum of the two scores.
+To solve the environment, the average score over 100 episodes must reach +0.5.
+
+The observation space is is a 8-D space corresponding to 8 continuous variables, related to position and velocity of the ball and the racket. One observation is provided for each player (local observation).
+
+The action space is 2-D continuous space vector, corresponding to movement toward (or away from) the net, and jumping. The continuous value of each variable must fit the [-1, +1] interval.
+
+
+### Description of the algorithm
+We use the DDPG (Deep Deterministic Policy Gradient) algorithm in which two networks must be trained to learn:
+- the best action to achieve in any state: the actor network
+- the expected value related to any state: the critic network
+
+For a given the state, The actor provides the probability for each actionto be choosen, while the critic network provides the expected value of each state which is the estimate of the Q-function. We will see that for both actor and critic networks, a target network is introduced to improve weights update as in DQN.
+
+As in the DQN algorithm, the algorithm used an experience replay buffer which allows to store the tuple `(state, action, reward, next state)` of each agent at each time step. It is a FIFO queue where the size is an hyperparameter.
+
+A noise process is used to encourage exploration by adding some noise, thanks to the Ornstein-Uhlenbeck process, to the selected action vector. 
+
+We describe hereafter the training procedure:
+
+1. A different state vector is provided to each agent, which are stacked leading to a 24-D vector
+2. Each agent select an action among 2 by feeding the actor network with its state vector
+3. Noise, obtained with the Ornstein-Uhlenbeck process, is added to action vectors
+4. After executing actions, the environment provides for each agent a reward and a next state vector
+5. The experience replay buffer is fed with the tuple `(state, action, reward, next state)` of each agent
+6. The experience replay buffer is sampled to extract a batch of tuples
+7. The local actor network weights are updated by using the predicted states value provided by the critic
+8. The local critic network weights are updated by using the predicted states value and the target critic
+9. both actor and critic targets are updated with soft-update thanks to their local networks
+
+### Actor and critic neural networks architecture
+
+The actor network is a stack of two hidden linear layers, followed by a ReLU function. The number of input neurons is the state space size (24), while the number of output neurons is the action space size (2). The activation function of the output layer is a `tanh` function, allowing continuous values of the action vector in the [-1, +1] interval.
+
+The architecture of the critic network is a little bit more complex. Instead of directly stacking at the input action and state spaces, a first hidden layer is used with input only the state vector (24-D). Then, the ouput of this first layer is concatenated with action vector (2-D) to feed a second hidden layer. Finally, the output layer is 1 neuron, providing the estimated Q-value.
+
+Note that we use batch normalization at the input of hidden layers to make learning more stable and faster by re-centering and re-scaling input data.
+
+The size of the hidden layers of actor and critic networks are hyperparameters. In order to limit the number of parameters of the networks, they should be as small as possible. In our implementation all layer neurons contain 128 neurons.
+
+In addtion to architecture, we need to adjust hyperparameters related to the learning: 
+- `LR_ACTOR = 0.001` is the learning rate for the optimization procedure to update the local actor weights
+- `LR_CRITIC = 0.001` is the learning rate for optimization procedure to update of the local critic weights
+
+
+### Agent hyperparameters
+
+These parameters are related to the Reinforcement learning procedure:
+- `BUFFER_SIZE = 100000` is the maximum number tuples `(state, action, reward, next_state, done)` of the experience replay buffer.
+- `GAMMA = 0.99` which control the discount factor, and so the "deep" of the reinforcement learning process.
+- `TAU = 0.001` controls soft-update related to the target network parameters. Smaller `TAU` is, smaller is the weights update.
+- `BATCH_SIZE = 128` is the number samples used to achieve the optimization process. 
+
+### Results
+We show on the figure below the evolution of the maximum score obtained by 2 agents during an episode, with the DDPG algorithm and the network architectures describes above. The plotted average score is obtained from the average score over 100 consecutive episodes (The first point is thus calculated after 100 episodes).
+The target of +0.5 is reached after 880 episodes. We observe an instability of the score which exhibits oscillations, but without collapse. The maximum average score obtained is above 1.2.
+
+![avg-score](p3-avg_score.png "Title")
+
+### Future perspectives
+From a technical point, it will be necessary to understand the behavior of the model for several hyperparameters sets.
+From an algorithm point of view, at this step, we only test the DDPG algorithm. It is important to test other algorithms such as PPO, A3C, or D4PG.
+Finally, try to solve many other use-cases involving continuous control will be one main objective.
